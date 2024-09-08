@@ -1,5 +1,3 @@
-const MAX_LEVEL = 100;
-
 function calculateBaseCoinPotential(currentCoinPotential, currentLevel) {
     return currentCoinPotential / (((currentLevel - 1) * 0.04) + 1);
 }
@@ -52,30 +50,31 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('calculatorForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
-        const level = parseInt(document.getElementById('level').value);
+        const currentLevel = parseInt(document.getElementById('level').value);
+        const targetLevel = parseInt(document.getElementById('targetLevel').value);
         const coinMultiplier = parseInt(document.getElementById('coinmultiplier').value);
         const gemMultiplier = parseInt(document.getElementById('gemmultiplier').value);
         const runeValue = document.getElementById('rune').value;
 
-        const baseCoinPotential = calculateBaseCoinPotential(coinMultiplier, level);
-        const baseGemPotential = calculateBaseGemPotential(gemMultiplier, level);
-        let maxCoinPotential = calculateCoinPotential(baseCoinPotential, MAX_LEVEL);
-        let maxGemPotential = calculateGemPotential(baseGemPotential, MAX_LEVEL);
+        const baseCoinPotential = calculateBaseCoinPotential(coinMultiplier, currentLevel);
+        const baseGemPotential = calculateBaseGemPotential(gemMultiplier, currentLevel);
+        let targetCoinPotential = calculateCoinPotential(baseCoinPotential, targetLevel);
+        let targetGemPotential = calculateGemPotential(baseGemPotential, targetLevel);
 
         let runeName = "None";
         if (runeValue) {
             const [runeType, runeMultiplier] = runeValue.split(':');
             if (runeType === "coin") {
-                maxCoinPotential *= parseFloat(runeMultiplier);
+                targetCoinPotential *= parseFloat(runeMultiplier);
                 runeName = document.getElementById('rune').options[document.getElementById('rune').selectedIndex].text;
             } else if (runeType === "gem") {
-                maxGemPotential *= parseFloat(runeMultiplier);
+                targetGemPotential *= parseFloat(runeMultiplier);
                 runeName = document.getElementById('rune').options[document.getElementById('rune').selectedIndex].text;
             }
         }
 
-        document.getElementById('coinPotential').textContent = `${formatNumber(Math.floor(maxCoinPotential))} (${Math.floor(maxCoinPotential)})`;
-        document.getElementById('gemPotential').textContent = `${formatNumber(Math.floor(maxGemPotential))} (${Math.floor(maxGemPotential)})`;
+        document.getElementById('coinPotential').textContent = `${formatNumber(Math.floor(targetCoinPotential))} (${Math.floor(targetCoinPotential)})`;
+        document.getElementById('gemPotential').textContent = `${formatNumber(Math.floor(targetGemPotential))} (${Math.floor(targetGemPotential)})`;
         document.getElementById('runeSelected').textContent = runeName;
         document.getElementById('result').style.display = 'block';
         
